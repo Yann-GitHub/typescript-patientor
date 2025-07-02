@@ -10,6 +10,25 @@ router.get("/", (_req, res) => {
   res.send(patientService.getAllPatients());
 });
 
+router.get("/:id", (req, res) => {
+  const patient = patientService.getPatientById(req.params.id);
+  if (patient) {
+    res.json(patient);
+  } else {
+    res.status(404).send("Patient not found");
+  }
+});
+
+// With Zod validation
+router.post(
+  "/",
+  newPatientParser,
+  (req: Request<unknown, unknown, NewPatient>, res: Response<Patient>) => {
+    const addedPatient = patientService.addPatient(req.body);
+    res.status(201).json(addedPatient);
+  }
+);
+
 // Without Zod validation
 // router.post("/", (req, res) => {
 //   // res.send(patientService.addPatient());
@@ -26,16 +45,6 @@ router.get("/", (_req, res) => {
 //     res.status(400).send(errorMessage);
 //   }
 // });
-
-// With Zod validation
-router.post(
-  "/",
-  newPatientParser,
-  (req: Request<unknown, unknown, NewPatient>, res: Response<Patient>) => {
-    const addedPatient = patientService.addPatient(req.body);
-    res.status(201).json(addedPatient);
-  }
-);
 
 router.use(errorMiddleware);
 

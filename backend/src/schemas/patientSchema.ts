@@ -9,4 +9,16 @@ export const newPatientSchema = z.object({
     .string()
     .min(3, "Occupation must be at least 3 characters long"),
   gender: z.nativeEnum(Gender),
+  entries: z
+    .array(
+      z.object({
+        id: z.string().optional(),
+        date: z.string().date(),
+        type: z.string(),
+        specialist: z.string(),
+        description: z.string(),
+        diagnosisCodes: z.array(z.string()).optional(),
+      })
+    )
+    .optional(),
 });
