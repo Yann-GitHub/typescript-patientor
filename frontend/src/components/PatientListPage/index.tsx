@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Table,
@@ -26,6 +27,13 @@ interface Props {
 const PatientListPage = ({ patients, setPatients }: Props) => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [error, setError] = useState<string>();
+
+  const navigate = useNavigate();
+
+  // Fonction pour naviguer vers la page de détail
+  const handlePatientClick = (patientId: string) => {
+    navigate(`/patients/${patientId}`);
+  };
 
   const openModal = (): void => setModalOpen(true);
 
@@ -77,7 +85,12 @@ const PatientListPage = ({ patients, setPatients }: Props) => {
         <TableBody>
           {Object.values(patients).map((patient: Patient) => (
             <TableRow key={patient.id}>
-              <TableCell>{patient.name}</TableCell>
+              <TableCell
+                style={{ cursor: "pointer" }}
+                onClick={() => handlePatientClick(patient.id)}
+              >
+                {patient.name}
+              </TableCell>
               <TableCell>{patient.gender}</TableCell>
               <TableCell>{patient.occupation}</TableCell>
               <TableCell>
