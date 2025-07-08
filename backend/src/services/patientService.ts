@@ -4,13 +4,16 @@ import { v1 as uuid } from "uuid";
 
 // Returns all patients without sensitive information (like ssn)
 const getAllPatients = (): Array<NonSensitivePatient> => {
-  return patientData.map(({ id, name, dateOfBirth, gender, occupation }) => ({
-    id,
-    name,
-    dateOfBirth,
-    gender,
-    occupation,
-  }));
+  return patientData.map(
+    ({ id, name, dateOfBirth, gender, occupation, entries }) => ({
+      id,
+      name,
+      dateOfBirth,
+      gender,
+      occupation,
+      entries,
+    })
+  );
 };
 
 const getPatientById = (id: string): Patient | undefined => {
