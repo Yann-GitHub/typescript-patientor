@@ -1,16 +1,38 @@
 import { Request, Response, NextFunction } from "express";
-import { z } from "zod";
+import { ZodError } from "zod";
+
+// const errorMiddleware = (
+//   error: unknown,
+//   _req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   if (error instanceof ZodError) {
+//     res.status(400).json({ error: error });
+//     console.log("yoyooy");
+//   } else if (error instanceof Error) {
+//     res.status(500).json({ error: error.message });
+//     console.log("Error middleware triggered:", error.message);
+//   } else {
+//     next(error);
+//   }
+// };
 
 const errorMiddleware = (
   error: unknown,
   _req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
-  if (error instanceof z.ZodError) {
-    res.status(400).send({ error: error.issues });
+  if (error instanceof ZodError) {
+    console.log("ZodError detected:", error.errors);
+    res.status(400).json({ error: "Validation failed", details: error.errors });
+  } else if (error instanceof Error) {
+    console.log("Standard Error detected:", error.message);
+    res.status(500).json({ error: error.message });
   } else {
-    next(error);
+    console.log("Unknown error type:", error);
+    res.status(500).json({ error: "Something went wrong" });
   }
 };
 

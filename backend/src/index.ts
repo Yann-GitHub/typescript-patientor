@@ -3,6 +3,8 @@ import cors from "cors";
 import diagnoseRouter from "./routes/diagnoses";
 import patientRouter from "./routes/patients";
 
+import errorMiddleware from "./middlewares/errorHandlers";
+
 const app = express();
 
 app.use(cors());
@@ -18,6 +20,9 @@ app.get("/api/ping", (_req, res) => {
 app.use("/api/diagnoses", diagnoseRouter);
 
 app.use("/api/patients", patientRouter);
+
+// Error handling middleware
+app.use(errorMiddleware);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

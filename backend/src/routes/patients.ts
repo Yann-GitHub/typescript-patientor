@@ -1,10 +1,14 @@
 import { Router, Request, Response } from "express";
 import patientService from "../services/patientService";
-import errorMiddleware from "../middlewares/errorHandlers";
-import newPatientParser from "../middlewares/validators";
-import { NewPatient, Patient } from "../types/types";
+// import errorMiddleware from "../middlewares/errorHandlers";
+import { newEntryParser, newPatientParser } from "../middlewares/validators";
+import { NewPatient, Patient, EntryWithoutId } from "../types/types";
 
 const router = Router();
+
+type ErrorResponse = {
+  error: string;
+};
 
 router.get("/", (_req, res) => {
   res.send(patientService.getAllPatients());
@@ -18,6 +22,29 @@ router.get("/:id", (req, res) => {
     res.status(404).send("Patient not found");
   }
 });
+
+router.post(
+  "/:id/entries",
+  newEntryParser,
+  (
+    req: Request<{ id: string }, unknown, EntryWithoutId>,
+    res: Response<Patient | ErrorResponse>
+  ) => {
+    const patientId = req.params.id;
+    const entry = req.body;
+    try {
+      const updatedPatient = patientService.addEntryToPatient(patientId, entry);
+      res.status(201).json(updatedPatient);
+    } catch (error: unknown) {
+      let errorMessage = "Something went wrong.";
+      if (error instanceof Error) {
+        errorMessage += " Error: " + error.message;
+      }
+      // res.status(400).send(errorMessage);
+      res.status(400).json({ error: errorMessage } as ErrorResponse);
+    }
+  }
+);
 
 // With Zod validation
 router.post(
@@ -46,6 +73,6 @@ router.post(
 //   }
 // });
 
-router.use(errorMiddleware);
+// router.use(errorMiddleware); // Moved to index.ts for centralized error handling
 
 export default router;

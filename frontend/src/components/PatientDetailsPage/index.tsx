@@ -81,47 +81,6 @@ const PatientDetailsPage = () => {
       </Box>
     );
   }
-
-  // return (
-  //   <Box sx={{ padding: 2 }}>
-  //     <Typography variant="h4" component="h1">
-  //       {patient.name}
-  //       <Box component="span" ml={1}>
-  //         {renderGenderIcon(patient.gender)}
-  //       </Box>
-  //     </Typography>
-  //     <Typography>SSN: {patient.ssn}</Typography>
-  //     <Typography>Occupation: {patient.occupation}</Typography>
-  //     {/* <Typography>Date of Birth: {patient.dateOfBirth}</Typography> */}
-  //     <Typography style={{ marginTop: "20px" }} variant="h5" component="h1">
-  //       entries
-  //     </Typography>
-  //     {patient.entries && patient.entries.length > 0 ? (
-  //       patient.entries.map((entry) => (
-  //         <Box key={entry.id} sx={{ marginBottom: 2 }}>
-  //           <Typography style={{ marginBottom: "30px" }} variant="body1">
-  //             {entry.date} - {entry.description}
-  //           </Typography>
-  //           {/* <Typography variant="body2">
-  //             Specialist: {entry.specialist}
-  //           </Typography> */}
-  //           {entry.diagnosisCodes && entry.diagnosisCodes.length > 0 && (
-  //             // <Typography variant="">
-  //             //   Diagnosis Codes: {entry.diagnosisCodes.join(", ")}
-  //             // </Typography>
-  //             <ul>
-  //               {entry.diagnosisCodes.map((code) => (
-  //                 <li key={code}>{code}</li>
-  //               ))}
-  //             </ul>
-  //           )}
-  //         </Box>
-  //       ))
-  //     ) : (
-  //       <Typography>No entries found for this patient.</Typography>
-  //     )}
-  //   </Box>
-  // );
   return (
     <Box sx={{ padding: 3 }}>
       {/* En-tête du patient */}

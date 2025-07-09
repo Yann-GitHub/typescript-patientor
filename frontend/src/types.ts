@@ -10,15 +10,6 @@ export enum Gender {
   Other = "other",
 }
 
-// export interface Entry {
-//   id?: string;
-//   date: string;
-//   type: string;
-//   specialist: string;
-//   description: string;
-//   diagnosisCodes?: string[];
-// }
-
 export interface Patient {
   id: string;
   name: string;
@@ -30,6 +21,15 @@ export interface Patient {
 }
 
 export type PatientFormValues = Omit<Patient, "id" | "entries">;
+
+// export interface Entry {
+//   id?: string;
+//   date: string;
+//   type: string;
+//   specialist: string;
+//   description: string;
+//   diagnosisCodes?: string[];
+// }
 
 export interface BaseEntry {
   id: string;
