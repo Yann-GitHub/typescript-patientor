@@ -1,47 +1,74 @@
-import { Button, TextField, Stack } from "@mui/material";
+import {
+  Button,
+  TextField,
+  Stack,
+  MenuItem,
+  Autocomplete,
+} from "@mui/material";
 import { useState, SyntheticEvent } from "react";
 import { EntryFormValues, EntryType, HealthCheckRating } from "../../types";
+import { useDiagnoses } from "../../hooks/useDiagnoses";
 
-type props = {
+type Props = {
   patientId: string;
   onCancel: () => void;
   onSubmit: (values: EntryFormValues, id: string) => void;
 };
 
-const AddEntryForm = ({ patientId, onCancel, onSubmit }: props) => {
-  const [description, setName] = useState("");
+const AddEntryForm = ({ patientId, onCancel, onSubmit }: Props) => {
+  const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [specialist, setSpecialist] = useState("");
   const [diagnoses, setDiagnoses] = useState<string[]>([]);
   const [type, setType] = useState<EntryType>(EntryType.HealthCheck);
-  const [healthCheckRating, setHealthCheckRating] = useState<HealthCheckRating>(
-    HealthCheckRating.Healthy
-  );
+  // const [healthCheckRating, setHealthCheckRating] = useState<HealthCheckRating>(
+  //   HealthCheckRating.Healthy
+  // );
+  const [healthCheckRating, setHealthCheckRating] = useState<
+    HealthCheckRating | ""
+  >("");
+
+  const {
+    diagnoses: availableDiagnoses,
+    loading: diagnosesLoading,
+    error: diagnosesError,
+    // getDiagnosisName,
+  } = useDiagnoses();
 
   const addEntry = (event: SyntheticEvent) => {
     event.preventDefault();
+
     const entry: EntryFormValues = {
       description,
       date,
       specialist,
       diagnosisCodes: diagnoses,
       type: "HealthCheck",
-      healthCheckRating,
+      // healthCheckRating,
+      healthCheckRating: healthCheckRating as HealthCheckRating, // Forcer le type
     };
     onSubmit(entry, patientId);
   };
 
+  const healthCheckRatingOptions = [
+    { value: HealthCheckRating.Healthy, label: "Healthy" },
+    { value: HealthCheckRating.LowRisk, label: "Low Risk" },
+    { value: HealthCheckRating.HighRisk, label: "High Risk" },
+    { value: HealthCheckRating.CriticalRisk, label: "Critical Risk" },
+  ];
+
+  const entryTypeOptions = [
+    { value: EntryType.HealthCheck, label: "Health Check" },
+    {
+      value: EntryType.OccupationalHealthcare,
+      label: "Occupational Healthcare",
+    },
+    { value: EntryType.Hospital, label: "Hospital" },
+  ];
+
   return (
-    <div
-      style={{
-        // backgroundColor: "#f9f9f9",
-        border: "1px solid #ccc",
-        padding: "20px",
-        borderRadius: "8px",
-        marginBottom: "30px",
-      }}
-    >
-      <h1 style={{ marginTop: "0px" }}>New HealthCheck entry</h1>
+    <div>
+      <h4 style={{ marginTop: "0px" }}>New HealthCheck entry</h4>
 
       <div>
         <form onSubmit={addEntry}>
@@ -50,16 +77,23 @@ const AddEntryForm = ({ patientId, onCancel, onSubmit }: props) => {
             placeholder="Description of the entry"
             fullWidth
             value={description}
-            onChange={({ target }) => setName(target.value)}
-            style={{ marginBottom: "10px" }}
+            onChange={({ target }) => setDescription(target.value)}
+            sx={{ mb: 2 }}
           />
           <TextField
             label="Date"
-            placeholder="YYYY-MM-DD"
+            // placeholder="YYYY-MM-DD"
             fullWidth
             value={date}
             onChange={({ target }) => setDate(target.value)}
-            style={{ marginBottom: "10px" }}
+            sx={{ mb: 2 }}
+            type="date"
+            InputLabelProps={{ shrink: true }}
+            InputProps={{
+              inputProps: {
+                max: new Date().toISOString().split("T")[0],
+              },
+            }}
           />
           <TextField
             label="Specialist"
@@ -67,37 +101,51 @@ const AddEntryForm = ({ patientId, onCancel, onSubmit }: props) => {
             fullWidth
             value={specialist}
             onChange={({ target }) => setSpecialist(target.value)}
-            style={{ marginBottom: "10px" }}
+            sx={{ mb: 2 }}
           />
-          <TextField
-            label="Diagnoses Codes"
-            placeholder="Z57.1, Z74.3"
-            fullWidth
-            value={diagnoses.join(", ")}
-            onChange={({ target }) =>
-              setDiagnoses(target.value.split(",").map((code) => code.trim()))
-            }
-            style={{ marginBottom: "10px" }}
+
+          <Autocomplete
+            multiple
+            options={availableDiagnoses}
+            getOptionLabel={(option) => `${option.code} - ${option.name}`}
+            value={availableDiagnoses.filter((d) => diagnoses.includes(d.code))}
+            onChange={(_, newValue) => {
+              setDiagnoses(newValue.map((d) => d.code));
+            }}
+            loading={diagnosesLoading}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Diagnoses"
+                placeholder="Select diagnoses"
+                sx={{ mb: 2 }}
+                helperText={diagnosesError || "Select relevant diagnoses"}
+                error={!!diagnosesError}
+              />
+            )}
           />
           <TextField
             label="Health Check Rating"
             select
             fullWidth
             value={healthCheckRating}
+            // onChange={({ target }) =>
+            //   setHealthCheckRating(Number(target.value) as HealthCheckRating)
+            // }
             onChange={({ target }) =>
-              setHealthCheckRating(Number(target.value) as HealthCheckRating)
+              setHealthCheckRating(
+                target.value === ""
+                  ? ""
+                  : (Number(target.value) as HealthCheckRating)
+              )
             }
-            style={{ marginBottom: "10px" }}
-            SelectProps={{
-              native: true,
-            }}
+            sx={{ mb: 2 }}
           >
-            <option value={HealthCheckRating.Healthy}>Healthy</option>
-            <option value={HealthCheckRating.LowRisk}>Low Risk</option>
-            <option value={HealthCheckRating.HighRisk}>High Risk</option>
-            <option value={HealthCheckRating.CriticalRisk}>
-              Critical Risk
-            </option>
+            {healthCheckRatingOptions.map((rating) => (
+              <MenuItem value={rating.value} key={rating.value}>
+                {rating.label}
+              </MenuItem>
+            ))}
           </TextField>
           <TextField
             label="Type"
@@ -105,18 +153,14 @@ const AddEntryForm = ({ patientId, onCancel, onSubmit }: props) => {
             fullWidth
             value={type}
             onChange={({ target }) => setType(target.value as EntryType)}
-            style={{ marginBottom: "10px" }}
-            SelectProps={{
-              native: true,
-            }}
+            sx={{ mb: 2 }}
           >
-            <option value={EntryType.HealthCheck}>Health Check</option>
-            <option value={EntryType.OccupationalHealthcare}>
-              Occupational Healthcare
-            </option>
-            <option value={EntryType.Hospital}>Hospital</option>
+            {entryTypeOptions.map((typeOption) => (
+              <MenuItem key={typeOption.value} value={typeOption.value}>
+                {typeOption.label}
+              </MenuItem>
+            ))}
           </TextField>
-
           <Stack
             direction="row"
             spacing={2}
@@ -126,7 +170,6 @@ const AddEntryForm = ({ patientId, onCancel, onSubmit }: props) => {
             <Button variant="contained" color="primary" type="submit">
               Add
             </Button>
-
             <Button
               variant="outlined"
               type="button"

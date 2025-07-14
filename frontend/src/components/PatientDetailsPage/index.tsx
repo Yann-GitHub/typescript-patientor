@@ -46,6 +46,17 @@ const PatientDetailsPage = () => {
     setErrorEntry(undefined);
   };
 
+  interface ValidationError {
+    code: string;
+    message: string;
+    path: (string | number)[];
+  }
+
+  interface ErrorResponse {
+    error?: string;
+    details?: ValidationError[];
+  }
+
   const submitNewEntry = async (values: EntryFormValues, id: string) => {
     try {
       console.log("Submitting new entry with values:", values);
@@ -54,17 +65,40 @@ const PatientDetailsPage = () => {
       setPatient(updatedPatient);
       setModalOpen(false);
       setErrorEntry(undefined);
+      // } catch (e: unknown) {
+      //   if (axios.isAxiosError(e)) {
+      //     if (e?.response?.data && typeof e?.response?.data === "string") {
+      //       const message = e.response.data.replace(
+      //         "Something went wrong. Error: ",
+      //         ""
+      //       );
+      //       console.error(message);
+      //       setErrorEntry(message);
+      //     } else {
+      //       setErrorEntry("Unrecognized axios error");
+      //     }
+      //   } else {
+      //     console.error("Unknown error", e);
+      //     setErrorEntry("Unknown error");
+      //   }
+      // }
     } catch (e: unknown) {
       if (axios.isAxiosError(e)) {
-        if (e?.response?.data && typeof e?.response?.data === "string") {
-          const message = e.response.data.replace(
-            "Something went wrong. Error: ",
-            ""
-          );
-          console.error(message);
-          setErrorEntry(message);
+        const responseData = e.response?.data as ErrorResponse;
+
+        if (responseData?.details && Array.isArray(responseData.details)) {
+          // ✅ Gestion des erreurs de validation Zod
+          const errorMessages = responseData.details.map((error) => {
+            const fieldName = error.path.join(".") || "Unknown field";
+            return `• ${fieldName}: ${error.message}`;
+          });
+
+          setErrorEntry(`Validation errors:\n${errorMessages.join("\n")}`);
+        } else if (responseData?.error) {
+          // ✅ Gestion des erreurs génériques
+          setErrorEntry(responseData.error);
         } else {
-          setErrorEntry("Unrecognized axios error");
+          setErrorEntry("An unexpected error occurred");
         }
       } else {
         console.error("Unknown error", e);

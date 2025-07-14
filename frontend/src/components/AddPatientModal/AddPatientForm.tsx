@@ -1,12 +1,5 @@
 import { useState, SyntheticEvent } from "react";
-import {
-  TextField,
-  MenuItem,
-  Select,
-  Button,
-  SelectChangeEvent,
-  Stack,
-} from "@mui/material";
+import { TextField, MenuItem, Button, Stack } from "@mui/material";
 import { PatientFormValues, Gender } from "../../types";
 
 interface Props {
@@ -31,14 +24,10 @@ const AddPatientForm = ({ onCancel, onSubmit }: Props) => {
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [gender, setGender] = useState(Gender.Other);
 
-  const onGenderChange = (event: SelectChangeEvent<string>) => {
-    event.preventDefault();
-    if (typeof event.target.value === "string") {
-      const value = event.target.value;
-      const gender = Object.values(Gender).find((g) => g.toString() === value);
-      if (gender) {
-        setGender(gender);
-      }
+  const handleGenderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    if (Object.values(Gender).includes(value as Gender)) {
+      setGender(value as Gender);
     }
   };
 
@@ -88,19 +77,20 @@ const AddPatientForm = ({ onCancel, onSubmit }: Props) => {
           onChange={({ target }) => setOccupation(target.value)}
           style={{ marginBottom: "10px" }}
         />
-        <Select
+        <TextField
           label="Gender"
+          select
           fullWidth
           value={gender}
-          onChange={onGenderChange}
-          style={{ marginBottom: "10px" }}
+          onChange={handleGenderChange}
+          sx={{ mt: 2 }}
         >
           {genderOptions.map((option) => (
-            <MenuItem key={option.label} value={option.value}>
+            <MenuItem value={option.value} key={option.value}>
               {option.label}
             </MenuItem>
           ))}
-        </Select>
+        </TextField>
 
         <Stack
           direction="row"
