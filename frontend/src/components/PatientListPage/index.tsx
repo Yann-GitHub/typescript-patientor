@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -10,13 +11,9 @@ import {
   TableRow,
   TableBody,
 } from "@mui/material";
-import axios from "axios";
-
 import { PatientFormValues, Patient } from "../../types";
 import AddPatientModal from "../AddPatientModal";
-
 import HealthRatingBar from "../HealthRatingBar";
-
 import patientService from "../../services/patients";
 
 interface Props {
@@ -106,7 +103,7 @@ const PatientListPage = ({ patients, setPatients }: Props) => {
         error={error}
         onClose={closeModal}
       />
-      <Button variant="contained" onClick={() => openModal()}>
+      <Button color="secondary" variant="contained" onClick={() => openModal()}>
         Add New Patient
       </Button>
     </div>

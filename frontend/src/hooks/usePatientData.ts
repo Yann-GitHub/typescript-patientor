@@ -10,6 +10,7 @@ interface UsePatientDataReturn {
   loading: boolean;
   error: string | null;
   getDiagnosisName: (code: string) => string;
+  setPatient: (patient: Patient) => void; // ✅ Exposer directement le setter
 }
 
 export const usePatientData = (
@@ -65,5 +66,6 @@ export const usePatientData = (
     loading,
     error,
     getDiagnosisName,
+    setPatient, // ✅ Exposer directement le setter
   };
 };

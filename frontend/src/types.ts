@@ -22,6 +22,8 @@ export interface Patient {
 
 export type PatientFormValues = Omit<Patient, "id" | "entries">;
 
+// export type EntryFormValues = Omit<Entry, "id">;
+
 // export interface Entry {
 //   id?: string;
 //   date: string;
@@ -68,7 +70,22 @@ export interface HospitalEntry extends BaseEntry {
   };
 }
 
+export enum EntryType {
+  HealthCheck = "HealthCheck",
+  OccupationalHealthcare = "OccupationalHealthcare",
+  Hospital = "Hospital",
+}
+
 export type Entry =
   | HospitalEntry
   | OccupationalHealthcareEntry
   | HealthCheckEntry;
+
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown
+  ? Omit<T, K>
+  : never;
+
+export type EntryFormValues = UnionOmit<Entry, "id">;
+
+// // Define Entry without the 'id' property
+// export type EntryWithoutId = UnionOmit<Entry, "id">;

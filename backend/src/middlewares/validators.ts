@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { newPatientSchema } from "../schemas/patientSchema";
-// import { newEntrySchema } from "../schemas/entrySchema";
 import { entryWithoutIdSchema } from "../schemas/entrySchema";
-// import { ZodError } from "zod";
 
 export const newPatientParser = (
   req: Request,
@@ -31,7 +29,6 @@ export const newEntryParser = (
     next();
   } catch (error: unknown) {
     console.error("❌ Entry validation error:", error);
-    // Passer l'erreur originale au lieu de créer un nouvel objet
     next(error);
   }
 };

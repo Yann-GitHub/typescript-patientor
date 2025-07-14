@@ -1,12 +1,11 @@
 import { useState, SyntheticEvent } from "react";
 import {
   TextField,
-  InputLabel,
   MenuItem,
   Select,
-  Grid,
   Button,
   SelectChangeEvent,
+  Stack,
 } from "@mui/material";
 import { PatientFormValues, Gender } from "../../types";
 
@@ -59,15 +58,19 @@ const AddPatientForm = ({ onCancel, onSubmit }: Props) => {
       <form onSubmit={addPatient}>
         <TextField
           label="Name"
+          placeholder="John Doe"
           fullWidth
           value={name}
           onChange={({ target }) => setName(target.value)}
+          style={{ marginBottom: "10px" }}
         />
         <TextField
           label="Social security number"
+          placeholder="123-45-6789"
           fullWidth
           value={ssn}
           onChange={({ target }) => setSsn(target.value)}
+          style={{ marginBottom: "10px" }}
         />
         <TextField
           label="Date of birth"
@@ -75,20 +78,22 @@ const AddPatientForm = ({ onCancel, onSubmit }: Props) => {
           fullWidth
           value={dateOfBirth}
           onChange={({ target }) => setDateOfBirth(target.value)}
+          style={{ marginBottom: "10px" }}
         />
         <TextField
           label="Occupation"
+          placeholder="Astrophysicist"
           fullWidth
           value={occupation}
           onChange={({ target }) => setOccupation(target.value)}
+          style={{ marginBottom: "10px" }}
         />
-
-        <InputLabel style={{ marginTop: 20 }}>Gender</InputLabel>
         <Select
           label="Gender"
           fullWidth
           value={gender}
           onChange={onGenderChange}
+          style={{ marginBottom: "10px" }}
         >
           {genderOptions.map((option) => (
             <MenuItem key={option.label} value={option.value}>
@@ -97,30 +102,25 @@ const AddPatientForm = ({ onCancel, onSubmit }: Props) => {
           ))}
         </Select>
 
-        <Grid>
-          <Grid item>
-            <Button
-              color="secondary"
-              variant="contained"
-              style={{ float: "left" }}
-              type="button"
-              onClick={onCancel}
-            >
-              Cancel
-            </Button>
-          </Grid>
-          <Grid item>
-            <Button
-              style={{
-                float: "right",
-              }}
-              type="submit"
-              variant="contained"
-            >
-              Add
-            </Button>
-          </Grid>
-        </Grid>
+        <Stack
+          direction="row"
+          spacing={2}
+          justifyContent="space-between"
+          sx={{ mt: 2 }}
+        >
+          <Button
+            color="warning"
+            variant="outlined"
+            type="button"
+            onClick={onCancel}
+          >
+            Cancel
+          </Button>
+
+          <Button type="submit" variant="contained">
+            Add
+          </Button>
+        </Stack>
       </form>
     </div>
   );

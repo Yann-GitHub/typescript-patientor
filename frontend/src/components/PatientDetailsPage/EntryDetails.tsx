@@ -52,8 +52,6 @@ const EntryDetails: React.FC<EntryDetailsProps> = ({
           </Box>
         );
 
-      //   default:
-      //     return null;
       default:
         return assertNever(entry);
     }

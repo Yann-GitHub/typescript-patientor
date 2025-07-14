@@ -1,22 +1,33 @@
-// import { useState, useEffect } from "react";
+import { useState } from "react";
+import axios from "axios";
 import { useParams } from "react-router-dom";
-import { Gender } from "../../types";
-// import patientService from "../../services/patients";
-// import diagnosesService from "../../services/diagnoses";
-import { Typography, Box, CircularProgress } from "@mui/material";
+import { Gender, EntryFormValues } from "../../types";
+import { Typography, Box, CircularProgress, Button } from "@mui/material";
 import { Female, Male } from "@mui/icons-material";
 import { usePatientData } from "../../hooks/usePatientData";
 import EntryDetails from "./EntryDetails";
+import AddEntryModal from "../AddEntryModal";
+import patientService from "../../services/patients";
 
 const PatientDetailsPage = () => {
-  // const [patient, setPatient] = useState<Patient | null>(null);
-  // const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
-  // const [loading, setLoading] = useState<boolean>(true);
-  // const [error, setError] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [errorEntry, setErrorEntry] = useState<string>();
 
   const { id } = useParams();
+  const { patient, loading, error, getDiagnosisName, setPatient } =
+    usePatientData(id);
 
-  const { patient, loading, error, getDiagnosisName } = usePatientData(id);
+  // Vérification early return
+  if (!id) {
+    return (
+      <Box sx={{ padding: 2 }}>
+        <Typography color="error" variant="h6">
+          Invalid patient ID
+        </Typography>
+      </Box>
+    );
+  }
+
   const renderGenderIcon = (gender: Gender) => {
     switch (gender) {
       case Gender.Male:
@@ -28,34 +39,40 @@ const PatientDetailsPage = () => {
     }
   };
 
-  // useEffect(() => {
-  //   const fetchPatientDetails = async () => {
-  //     if (!id) {
-  //       setError("No patient ID provided");
-  //       setLoading(false);
-  //       return;
-  //     }
+  const openModal = (): void => setModalOpen(true);
 
-  //     try {
-  //       setLoading(true);
-  //       const patientData = await patientService.getById(id as string);
-  //       setPatient(patientData);
-  //     } catch (error) {
-  //       console.error("Error fetching patient details:", error);
-  //       setError("Failed to fetch patient details.");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+  const closeModal = (): void => {
+    setModalOpen(false);
+    setErrorEntry(undefined);
+  };
 
-  //   fetchPatientDetails();
-  // }, [id]);
+  const submitNewEntry = async (values: EntryFormValues, id: string) => {
+    try {
+      console.log("Submitting new entry with values:", values);
+      const updatedPatient = await patientService.addEntry(id, values);
+      console.log("Updated patient after adding entry:", updatedPatient);
+      setPatient(updatedPatient);
+      setModalOpen(false);
+      setErrorEntry(undefined);
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e)) {
+        if (e?.response?.data && typeof e?.response?.data === "string") {
+          const message = e.response.data.replace(
+            "Something went wrong. Error: ",
+            ""
+          );
+          console.error(message);
+          setErrorEntry(message);
+        } else {
+          setErrorEntry("Unrecognized axios error");
+        }
+      } else {
+        console.error("Unknown error", e);
+        setErrorEntry("Unknown error");
+      }
+    }
+  };
 
-  // if (loading) return <CircularProgress />;
-  // if (error) return <Typography color="error">Error: {error}</Typography>;
-  // if (!patient) return <Typography>Patient not found</Typography>;
-
-  // États de chargement et d'erreur
   if (loading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
@@ -81,9 +98,9 @@ const PatientDetailsPage = () => {
       </Box>
     );
   }
+
   return (
     <Box sx={{ padding: 3 }}>
-      {/* En-tête du patient */}
       <Box sx={{ marginBottom: 3 }}>
         <Typography variant="h4" component="h1" sx={{ marginBottom: 2 }}>
           {patient.name}
@@ -105,11 +122,27 @@ const PatientDetailsPage = () => {
         </Box>
       </Box>
 
-      {/* Section des entrées */}
       <Box>
         <Typography variant="h5" component="h2" sx={{ marginBottom: 2 }}>
           Medical Entries
         </Typography>
+
+        <Button
+          onClick={() => openModal()}
+          variant="contained"
+          color="secondary"
+          sx={{ marginBottom: 2 }}
+        >
+          New Entry
+        </Button>
+
+        <AddEntryModal
+          modalOpen={modalOpen}
+          onClose={closeModal}
+          onSubmit={submitNewEntry}
+          error={errorEntry}
+          patientId={id}
+        />
 
         {patient.entries && patient.entries.length > 0 ? (
           patient.entries.map((entry) => (

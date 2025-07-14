@@ -1,23 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodError } from "zod";
 
-// const errorMiddleware = (
-//   error: unknown,
-//   _req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   if (error instanceof ZodError) {
-//     res.status(400).json({ error: error });
-//     console.log("yoyooy");
-//   } else if (error instanceof Error) {
-//     res.status(500).json({ error: error.message });
-//     console.log("Error middleware triggered:", error.message);
-//   } else {
-//     next(error);
-//   }
-// };
-
 const errorMiddleware = (
   error: unknown,
   _req: Request,

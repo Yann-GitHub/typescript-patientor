@@ -22,14 +22,14 @@ const getAllPatients = (): Array<NonSensitivePatient> => {
   );
 };
 
-const getPatientById = (id: string): Patient | undefined => {
-  return patientData.find((patient) => patient.id === id);
-};
-
 // Returns all patients with sensitive information (like ssn) included
 // const getAllPatients = (): Array<Patient> => {
 //   return patientData;
 // };
+
+const getPatientById = (id: string): Patient | undefined => {
+  return patientData.find((patient) => patient.id === id);
+};
 
 const addPatient = (entry: NewPatient): Patient => {
   const newPatientEntry = {
