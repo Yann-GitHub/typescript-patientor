@@ -1,6 +1,8 @@
-# Patientor frontend
+# Patientor app - Fullstack TypeScript Patient Management System
 
-This is the frontend part of the Patientor application, a TypeScript-based patient management system. Includes features for managing patient data, medical entries, and diagnoses.
+This Patientor application, a TypeScript-based patient management system. Includes features for managing patient data, medical entries, and diagnoses. The frontend is built with React and Material-UI, providing a responsive and user-friendly interface. The application supports adding, viewing, and editing patient information, as well as managing medical entries and diagnoses.
+
+The project is part of the Full Stack Open course, focusing on modern web development practices with TypeScript, React, and Material-UI.
 
 ## Getting Started
 
@@ -24,20 +26,14 @@ This is the frontend part of the Patientor application, a TypeScript-based patie
    ```
 
 3. Install dependencies:
+
    ```bash
    npm install
    ```
-   or
-   ```bash
-    yarn install
-   ```
+
 4. Start the development server:
    ```bash
    npm start
-   ```
-   or
-   ```bash
-   yarn start
    ```
 
 ### Usage

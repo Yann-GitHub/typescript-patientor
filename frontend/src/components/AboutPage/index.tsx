@@ -28,7 +28,6 @@ const AboutPage = () => {
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      {/* Hero Section */}
       <Box sx={{ textAlign: "center", mb: 8 }}>
         <Typography
           variant="h2"
@@ -72,7 +71,6 @@ const AboutPage = () => {
         </Paper>
       </Box>
 
-      {/* Stats Section */}
       <Grid container spacing={3} sx={{ mb: 8 }}>
         {stats.map((stat, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
@@ -106,8 +104,6 @@ const AboutPage = () => {
           </Grid>
         ))}
       </Grid>
-
-      {/* Values Section */}
       <Paper
         sx={{
           p: 4,
@@ -157,8 +153,6 @@ const AboutPage = () => {
           </Grid>
         </Grid>
       </Paper>
-
-      {/* Call to Action */}
       <Box
         sx={{
           textAlign: "center",

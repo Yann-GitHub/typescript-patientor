@@ -1,6 +1,5 @@
 import { Router, Request, Response } from "express";
 import patientService from "../services/patientService";
-// import errorMiddleware from "../middlewares/errorHandlers";
 import { newEntryParser, newPatientParser } from "../middlewares/validators";
 import { NewPatient, Patient, EntryWithoutId } from "../types/types";
 
