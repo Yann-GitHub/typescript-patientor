@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { HealthCheckRating } from "../types/types";
 
-// Schema de base pour toutes les entries (sans id car EntryWithoutId)
+// Schema for base entry properties without ID
 const baseEntrySchema = z.object({
   description: z.string().min(1, "Description is required"),
   date: z
@@ -11,7 +11,7 @@ const baseEntrySchema = z.object({
   diagnosisCodes: z.array(z.string()).optional(),
 });
 
-// Schema pour HealthCheck entry
+// Schema for HealthCheck entry
 const healthCheckEntrySchema = baseEntrySchema.extend({
   type: z.literal("HealthCheck"),
   healthCheckRating: z.nativeEnum(HealthCheckRating),
@@ -31,7 +31,7 @@ const hospitalEntrySchema = baseEntrySchema.extend({
   }),
 });
 
-// Schema pour OccupationalHealthcare entry
+// Schema for OccupationalHealthcare entry
 const occupationalHealthcareEntrySchema = baseEntrySchema.extend({
   type: z.literal("OccupationalHealthcare"),
   employerName: z.string().min(1, "Employer name is required"),
@@ -50,12 +50,12 @@ const occupationalHealthcareEntrySchema = baseEntrySchema.extend({
     .optional(),
 });
 
-// Schema principal avec discriminated union
+// Schema for entry without ID with discriminated union
 export const entryWithoutIdSchema = z.discriminatedUnion("type", [
   healthCheckEntrySchema,
   hospitalEntrySchema,
   occupationalHealthcareEntrySchema,
 ]);
 
-// Type inféré pour validation de cohérence
+//  TypeScript type for entry without ID inferred from Zod schema
 export type ZodEntryWithoutId = z.infer<typeof entryWithoutIdSchema>;

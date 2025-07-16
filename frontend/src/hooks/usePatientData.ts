@@ -66,6 +66,6 @@ export const usePatientData = (
     loading,
     error,
     getDiagnosisName,
-    setPatient, // ✅ Exposer directement le setter
+    setPatient,
   };
 };

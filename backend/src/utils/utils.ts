@@ -1,10 +1,10 @@
-import { NewPatient } from "../types/types";
-import { newPatientSchema } from "../schemas/patientSchema";
+// import { NewPatient } from "../types/types";
+// import { newPatientSchema } from "../schemas/patientSchema";
 
 // With zod using schema validation for conscise and type-safe parsing
-const toNewPatient = (object: unknown): NewPatient => {
-  return newPatientSchema.parse(object);
-};
+// const toNewPatient = (object: unknown): NewPatient => {
+//   return newPatientSchema.parse(object);
+// };
 
 ////////////////////////////// Utility functions to validate and parse data without Zod //////////////////////////
 
@@ -88,4 +88,4 @@ const toNewPatient = (object: unknown): NewPatient => {
 //   throw new Error("Incorrect data: some fields are missing");
 // };
 
-export default toNewPatient;
+// export default toNewPatient;
